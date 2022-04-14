@@ -21,15 +21,14 @@ export default function Pokedex() {
 
       for await (const pokemon of response.results) {
         const pokemonDatails = await getPokemonDatailsByUrlApi(pokemon.url);
-        console.log(pokemonDatails);
 
         pokemonArray.push({
           id: pokemonDatails.id,
           name: pokemonDatails.name,
           type: pokemonDatails.types[0].type.name,
           order: pokemonDatails.order,
-          image: pokemonDatails.sprites.front_shiny,
-          // image: pokemonDatails.sprites.other["official-artwork"].front_default,
+          // image: pokemonDatails.sprites.front_shiny,
+          image: pokemonDatails.sprites.other["official-artwork"].front_default,
         });
       }
       setPokemon([...pokemons, ...pokemonArray]);
