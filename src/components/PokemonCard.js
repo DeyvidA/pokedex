@@ -20,6 +20,7 @@ export default function PokemonCard(props) {
   const goToPokemon = () => {
     navigation.navigate("Pokemon", { id: pokemon.id });
   };
+
   return (
     <TouchableWithoutFeedback onPress={goToPokemon}>
       <View style={styles.card}>
@@ -66,6 +67,7 @@ const styles = StyleSheet.create({
   },
   image: {
     position: "absolute",
+    bottom: 2,
     right: 2,
     width: 90,
     height: 90,

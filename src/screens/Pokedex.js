@@ -1,46 +1,47 @@
-import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useState, useEffect } from "react";
-import { getPokemonApi, getPokemonDatailsByUrlApi } from "../api/Pokemon";
+import { SafeAreaView } from "react-native";
+import { getPokemonsApi, getPokemonDetailsByUrlApi } from "../api/pokemon";
 import PokemonList from "../components/PokemonList";
 
 export default function Pokedex() {
-  const [pokemons, setPokemon] = useState([]);
+  const [pokemons, setPokemons] = useState([]);
   const [nextUrl, setNextUrl] = useState(null);
+
   useEffect(() => {
     (async () => {
-      await loadPokemon();
+      await loadPokemons();
     })();
   }, []);
 
-  const loadPokemon = async () => {
+  const loadPokemons = async () => {
     try {
-      const response = await getPokemonApi(nextUrl);
+      const response = await getPokemonsApi(nextUrl);
       setNextUrl(response.next);
 
-      const pokemonArray = [];
-
+      const pokemonsArray = [];
       for await (const pokemon of response.results) {
-        const pokemonDatails = await getPokemonDatailsByUrlApi(pokemon.url);
+        const pokemonDetails = await getPokemonDetailsByUrlApi(pokemon.url);
 
-        pokemonArray.push({
-          id: pokemonDatails.id,
-          name: pokemonDatails.name,
-          type: pokemonDatails.types[0].type.name,
-          order: pokemonDatails.order,
-          // image: pokemonDatails.sprites.front_shiny,
-          image: pokemonDatails.sprites.other["official-artwork"].front_default,
+        pokemonsArray.push({
+          id: pokemonDetails.id,
+          name: pokemonDetails.name,
+          type: pokemonDetails.types[0].type.name,
+          order: pokemonDetails.order,
+          image: pokemonDetails.sprites.other["official-artwork"].front_default,
         });
       }
-      setPokemon([...pokemons, ...pokemonArray]);
+
+      setPokemons([...pokemons, ...pokemonsArray]);
     } catch (error) {
       console.error(error);
     }
   };
+
   return (
     <SafeAreaView>
       <PokemonList
         pokemons={pokemons}
-        loadPokemon={loadPokemon}
+        loadPokemons={loadPokemons}
         isNext={nextUrl}
       />
     </SafeAreaView>

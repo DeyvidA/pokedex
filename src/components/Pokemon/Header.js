@@ -1,18 +1,17 @@
-import { View, Text, StyleSheet, Image, SafeAreaView } from "react-native";
-import { capitalize } from "lodash";
 import React from "react";
+import { StyleSheet, View, SafeAreaView, Text, Image } from "react-native";
+import { capitalize } from "lodash";
 import getColorByPokemonType from "../../utils/getColorByPokemonType";
-import Pokedex from "../../screens/Pokedex";
 
 export default function Header(props) {
   const { name, order, image, type } = props;
   const color = getColorByPokemonType(type);
 
-  const bgStyles = { backgroundColor: color, ...styles.bg };
+  const bgStyle = [{ backgroundColor: color, ...styles.bg }];
 
   return (
     <>
-      <View style={bgStyles}></View>
+      <View style={bgStyle} />
 
       <SafeAreaView style={styles.content}>
         <View style={styles.header}>
@@ -38,7 +37,7 @@ const styles = StyleSheet.create({
   },
   content: {
     marginHorizontal: 20,
-    marginTop: 50,
+    marginTop: 30,
   },
   header: {
     flexDirection: "row",
@@ -61,7 +60,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     top: 30,
   },
-  imagen: {
+  image: {
     width: 250,
     height: 300,
     resizeMode: "contain",
