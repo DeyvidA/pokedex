@@ -1,24 +1,42 @@
-import { View, Text, StyleSheet, Button } from "react-native";
-import React from "react";
+import React, { useState, useCallback } from "react";
+import { StyleSheet, View, Text, Button } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import { size } from "lodash";
 import useAuth from "../../hooks/useAuth";
+import { getPokemonsFavoriteApi } from "../../api/favorite";
 
 export default function UserData() {
   const { auth, logout } = useAuth();
+  const [total, setTotal] = useState(0);
+
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        try {
+          const response = await getPokemonsFavoriteApi();
+          setTotal(size(response));
+        } catch (error) {
+          setTotal(0);
+        }
+      })();
+    }, [])
+  );
+
   return (
-    <View>
+    <View style={styles.content}>
       <View style={styles.titleBlock}>
-        <Text style={styles.title}>Welcome</Text>
+        <Text style={styles.title}>Bienvenido,</Text>
         <Text style={styles.title}>{`${auth.firstName} ${auth.lastName}`}</Text>
       </View>
 
       <View style={styles.dataContent}>
         <ItemMenu title="Nombre" text={`${auth.firstName} ${auth.lastName}`} />
-        <ItemMenu title="UserName" text={auth.userName} />
+        <ItemMenu title="Username" text={auth.username} />
         <ItemMenu title="Email" text={auth.email} />
-        <ItemMenu title="Favorites Total" text={`0 Pokemons`} />
+        <ItemMenu title="Total Favoritos" text={`${total} pokemons`} />
       </View>
 
-      <Button title="Desconectarse" onPress={logout} />
+      <Button title="Desconectarse" onPress={logout} style={styles.btnLogoun} />
     </View>
   );
 }
@@ -28,7 +46,7 @@ function ItemMenu(props) {
 
   return (
     <View style={styles.itemMenu}>
-      <Text style={styles.itemMenuTitle}>{title}</Text>
+      <Text style={styles.itemMenuTitle}>{title}:</Text>
       <Text>{text}</Text>
     </View>
   );
@@ -59,5 +77,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     paddingRight: 10,
     width: 120,
+  },
+  btnLogoun: {
+    paddingTop: 20,
   },
 });

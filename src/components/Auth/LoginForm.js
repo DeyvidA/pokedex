@@ -1,12 +1,12 @@
+import React, { useState } from "react";
 import {
+  StyleSheet,
   View,
   Text,
-  StyleSheet,
   TextInput,
   Button,
   Keyboard,
 } from "react-native";
-import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { user, userDetails } from "../../utils/userDB";
@@ -14,27 +14,27 @@ import useAuth from "../../hooks/useAuth";
 
 export default function LoginForm() {
   const [error, setError] = useState("");
-  const { login, logout } = useAuth();
+  const { login } = useAuth();
 
   const formik = useFormik({
     initialValues: initialValues(),
     validationSchema: Yup.object(validationSchema()),
     validateOnChange: false,
-    onSubmit: (formValues) => {
+    onSubmit: (formValue) => {
       setError("");
-      const { username, password } = formValues;
+      const { username, password } = formValue;
 
-      if (username !== user.userName || password !== user.password) {
-        setError("The user or the password dont be corroct");
-        console.log("The user or the password dont be corroct");
+      if (username !== user.username || password !== user.password) {
+        setError("El usuario o la contraseña no son correcto");
       } else {
         login(userDetails);
       }
     },
   });
+
   return (
     <View>
-      <Text>LoginForm</Text>
+      <Text style={styles.title}>Iniciar sesión</Text>
       <TextInput
         placeholder="Nombre de usuario"
         style={styles.input}
@@ -43,7 +43,7 @@ export default function LoginForm() {
         onChangeText={(text) => formik.setFieldValue("username", text)}
       />
       <TextInput
-        placeholder="Contracenia"
+        placeholder="Contraseña"
         style={styles.input}
         autoCapitalize="none"
         secureTextEntry={true}
@@ -51,6 +51,7 @@ export default function LoginForm() {
         onChangeText={(text) => formik.setFieldValue("password", text)}
       />
       <Button title="Entrar" onPress={formik.handleSubmit} />
+
       <Text style={styles.error}>{formik.errors.username}</Text>
       <Text style={styles.error}>{formik.errors.password}</Text>
 
@@ -60,19 +61,23 @@ export default function LoginForm() {
 }
 
 function initialValues() {
-  return { username: "", password: "" };
+  return {
+    username: "",
+    password: "",
+  };
 }
+
 function validationSchema() {
   return {
-    username: Yup.string().required("userName is required"),
-    password: Yup.string().required("Password is required"),
+    username: Yup.string().required("El usuario es obligatorio"),
+    password: Yup.string().required("La contraseña es obligatoria"),
   };
 }
 
 const styles = StyleSheet.create({
   title: {
     textAlign: "center",
-    fontSize: 20,
+    fontSize: 28,
     fontWeight: "bold",
     marginTop: 50,
     marginBottom: 15,
@@ -86,7 +91,7 @@ const styles = StyleSheet.create({
   },
   error: {
     textAlign: "center",
-    color: "red",
+    color: "#f00",
     marginTop: 20,
   },
 });
